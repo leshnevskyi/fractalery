@@ -10,4 +10,4 @@ createRoot(containerElement).render(
 	</StrictMode>
 );
 
-document.appendChild(containerElement);
+document.body.appendChild(containerElement);
