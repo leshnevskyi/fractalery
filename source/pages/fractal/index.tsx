@@ -15,8 +15,19 @@ import {
 	NumberInput,
 } from 'components';
 
-
+import {setupCanvas} from 'packages/canvas';
+import fractalRenderer from './fractalRenderer';
 import {Complex} from 'packages/math';
+
+function createFractalRenderer(
+	exponent: number, constant: Complex, scaleFactor: number, colorIndex: number
+) {
+	return (context: CanvasRenderingContext2D) => {
+		fractalRenderer(
+			context, 10, exponent, constant, scaleFactor, colorIndex
+		);
+	};
+}
 
 const FractalPage = () => {
 	const [scaleValue, setScaleValue] = useState(1);
@@ -74,6 +85,16 @@ const FractalPage = () => {
 						/>
 					</ControlWrapper>
 				</ControlContainer>
+				<Canvas
+					ref={canvas => canvas 
+						&& setupCanvas(
+							canvas,
+							createFractalRenderer(
+								exponent, constant, 1 / scaleValue, colorIndex
+							)
+						)
+					} 
+				/>
 			</FractalSection>
 		</PageLayout>
 	);
