@@ -30,7 +30,7 @@ const Slider = ({title, range, step = 1, value, onChange}: Props) => {
 				</Track>
 				<Thumb>
 					<Text
-						size={5}
+						size={3}
 						color='tuftbush'
 						stretch='expanded'
 						weight={9}

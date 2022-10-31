@@ -50,6 +50,6 @@
 			"functions": "only-multiline"
 		}],
 		"eol-last": "error",
-		"max-len": ["error", {"code": 80}]
+		"max-len": ["error", {"code": 80, "tabWidth": 2}]
 	}
 }

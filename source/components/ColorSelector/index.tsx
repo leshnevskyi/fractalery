@@ -2,10 +2,9 @@ import styled from 'styled-components';
 
 const Wrapper = styled.div`
 	position: relative;
-	height: 7rem;
 	display: flex;
 	align-items: center;
-	gap: 1rem;
+	gap: 0.5rem;
 `;
 
 interface ColorProps {
@@ -14,7 +13,7 @@ interface ColorProps {
 }
 
 const Color = styled.div<ColorProps>`
-	height: 100%;
+	height: 7rem;
 	aspect-ratio: 1 / 1;
 	border-radius: 100vmax;
 	border: 5px solid white;

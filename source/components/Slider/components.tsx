@@ -10,11 +10,11 @@ const Wrapper = styled.div`
 `;
 
 const SliderWrapper = styled(Slider.Root)`
-  --slider-height: 1.7rem;
+  --slider-height: 1.3rem;
 
   position: relative;
   display: flex;
-  width: 30rem;
+  width: 25rem;
   height: var(--slider-height);
   align-items: center;
 `;

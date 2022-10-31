@@ -1,11 +1,13 @@
 import {Style} from 'style';
-import FractalPage from 'pages/fractal';
+import ColorSchemePage from 'pages/color-scheme';
+
+import 'style/index.css';
 
 function App() {
 	return (
 		<>
 			<Style/>
-			<FractalPage/>
+			<ColorSchemePage/>
 		</>
 	);
 }
