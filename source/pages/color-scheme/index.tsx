@@ -103,7 +103,7 @@ const ColorSchemePage = () => {
 				const factor = s 
 					* easeSymmetrically(l, 0, 1) 
 					* easeSymmetrically(h, minHue, maxHue); 
-				modifiedHsl.h = h + hueModifier * factor;
+				modifiedHsl.h = (360 + h + hueModifier) % 360;
 				modifiedHsl.s = clamp(s + saturationModifier * factor, 0, 1);
 				modifiedHsl.l = clamp(l + lightnessModifier * factor, 0, 1);
 			}
@@ -119,6 +119,8 @@ const ColorSchemePage = () => {
 		selectedHueRangeIndex,
 	]);
 
+	const [imageFile, setImageFile] = useState<File>();
+
 	function handleFileUpload(event: React.ChangeEvent<HTMLInputElement>) {	
 		const fileReader = new FileReader();
 		const fileList = event.target.files;
@@ -126,6 +128,7 @@ const ColorSchemePage = () => {
 		if (!fileList) return;
 
 		const imageFile = fileList[0];
+		setImageFile(imageFile);
 		fileReader.readAsDataURL(imageFile);
 
 		const image = new Image();
@@ -187,7 +190,15 @@ const ColorSchemePage = () => {
 					<FigureWrapper>
 						<div className='flex gap-10'>
 							<Text size={5} weight={7}>Modified</Text>
-							<Button>Export</Button>
+							<Button
+								as='a'
+								onClick={event => {
+									if (!hslCanvas || !imageFile) return;
+
+									event.currentTarget.download = `${imageFile.name}-modified`;
+									event.currentTarget.href = hslCanvas.toDataURL();
+								}}
+							>Export</Button>
 						</div>
 						{image && (
 							<>
