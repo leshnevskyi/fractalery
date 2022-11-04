@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback} from 'react';
+import {useState, useEffect} from 'react';
 import {isString, clamp} from 'lodash';
 import BezierEasing from 'bezier-easing';
 
@@ -28,11 +28,18 @@ function easeSymmetrically(
 	return easingFn((average - Math.abs(value - average)) / average); 
 }
 
-function renderImage(
+interface Point {
+	x: number;
+	y: number;
+}
+
+const renderImage = (
 	canvas: HTMLCanvasElement, 
 	image: HTMLImageElement,
 	rgbMapper?: (rgb: Rgb) => Rgb,
-) {
+	selectionStartPoint?: Point,
+	selectionEndPoint?: Point,
+) => {
 	canvas.style.aspectRatio = `${image.width} / ${image.height}`;
 	setupCanvas(canvas);
 
@@ -61,8 +68,20 @@ function renderImage(
 		] = rgbMapper ? Object.values(rgbMapper({r, g, b})) : [r, g, b]);
 	}
 
-	context.putImageData(imageData, 0, 0);
-}
+	if (!selectionStartPoint && !selectionEndPoint) {
+		context.putImageData(imageData, 0, 0);
+	} else if (selectionStartPoint && selectionEndPoint) {
+		context.putImageData(
+			imageData,
+			0, 
+			0, 
+			selectionStartPoint.x,
+			selectionStartPoint.y, 
+			selectionEndPoint.x - selectionStartPoint.x, 
+			selectionEndPoint.y - selectionStartPoint.y,
+		);
+	}
+};
 
 const ColorSchemePage = () => {
 	const [color, setColor] = useState(new Color({r: 0, g: 0, b: 0}));
@@ -89,6 +108,9 @@ const ColorSchemePage = () => {
 
 	const hueStep = 45;
 
+	const [selectionStartPoint, setSelectionStartPoint] = useState<Point>();
+	const [selectionEndPoint, setSelectionEndPoint] = useState<Point>();
+
 	useEffect(() => {
 		if (!image || !hslCanvas) return;
 
@@ -111,12 +133,20 @@ const ColorSchemePage = () => {
 			return Color.hslToRgb(modifiedHsl);
 		};
 
-		renderImage(hslCanvas, image, rgbMapper);
+		renderImage(
+			hslCanvas, 
+			image, 
+			rgbMapper,
+			selectionStartPoint,
+			selectionEndPoint, 
+		);
 	}, [
 		hueModifier, 
 		saturationModifier, 
 		lightnessModifier, 
 		selectedHueRangeIndex,
+		selectionStartPoint,
+		selectionEndPoint,
 	]);
 
 	const [imageFile, setImageFile] = useState<File>();
@@ -195,7 +225,7 @@ const ColorSchemePage = () => {
 								onClick={event => {
 									if (!hslCanvas || !imageFile) return;
 
-									event.currentTarget.download = `${imageFile.name}-modified`;
+									event.currentTarget.download = `${imageFile.name}`;
 									event.currentTarget.href = hslCanvas.toDataURL();
 								}}
 							>Export</Button>
@@ -205,6 +235,17 @@ const ColorSchemePage = () => {
 								<FigureCanvas
 									ref={canvas => hslCanvas = canvas}
 									onMouseMove={handleMouseMove}
+									onMouseDown={event => {
+										setSelectionStartPoint({
+											x: event.nativeEvent.offsetX, 
+											y: event.nativeEvent.offsetY,
+										});
+
+										setSelectionEndPoint(undefined);
+									}}
+									onMouseUp={event => setSelectionEndPoint({
+										x: event.nativeEvent.offsetX, y: event.nativeEvent.offsetY,
+									})}
 								/>
 								<ColorComponents components={
 								hsl as unknown as Record<string, number>

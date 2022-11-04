@@ -13,7 +13,6 @@
     "bezier-easing": "^2.1.0",
     "lodash": "^4.17.21",
     "mathjs": "^11.3.2",
-    "ml-matrix": "^6.10.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-is": "^18.2.0",
