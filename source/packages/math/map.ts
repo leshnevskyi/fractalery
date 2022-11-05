@@ -3,7 +3,8 @@ function map(
 	inStart: number, inStop: number, 
 	outStart: number, outStop: number
 ) {
-	return outStart + value / (inStop - inStart) * (outStop - outStart);
+	return outStart 
+		+ (outStop - outStart) / (inStop - inStart) * (value - inStart);
 }
 
 export default map;

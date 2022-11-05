@@ -3,4 +3,15 @@ interface DifferentiableFunction<T = number> {
 	derivative: (x: T) => T,
 }
 
-export type {DifferentiableFunction};
+interface Point {
+	x: number;
+	y: number;
+}
+
+interface Transformation {
+	offset: {x: number; y: number};
+	scale: number;
+	rotation: number;
+}
+
+export type {DifferentiableFunction, Point, Transformation};

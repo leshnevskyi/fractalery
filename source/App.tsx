@@ -1,5 +1,5 @@
 import {Style} from 'style';
-import ColorSchemePage from 'pages/color-scheme';
+import TransformationsPage from 'pages/transformations';
 
 import 'style/index.css';
 
@@ -7,7 +7,7 @@ function App() {
 	return (
 		<>
 			<Style/>
-			<ColorSchemePage/>
+			<TransformationsPage/>
 		</>
 	);
 }
