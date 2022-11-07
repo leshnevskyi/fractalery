@@ -12,6 +12,8 @@ function render(
 	context: CanvasRenderingContext2D, 
 	transformation: Transformation
 ) {
+	context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
 	const canvas = context.canvas;
 	const {clientWidth: width, clientHeight: height} = canvas;
 	const aspectRatio = width / height;
