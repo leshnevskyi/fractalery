@@ -1,6 +1,8 @@
 import {useEffect, useState, useRef} from 'react';
+import {round} from 'lodash';
 
 import {Canvas} from './components';
+import {PageLayout, Slider} from 'components';
 
 import {useElement} from 'hooks';
 
@@ -33,10 +35,46 @@ const TransformationsPage = () => {
 			scale,
 			rotation,
 		});
-	});
+	}, [canvas, offsetX, offsetY, scale, rotation]);
 
 	return (
-		<Canvas ref={canvasRef}/>
+		<PageLayout>
+			<div className='flex w-full h-full'>
+				<div className='flex flex-col w-1/3 gap-20'>
+					<Slider
+						title='Center X Position'
+						range={[-10, 10]}
+						step={0.1}
+						value={offsetX}
+						onChange={setOffsetX}
+					/>
+					<Slider
+						title='Center Y Position'
+						range={[-10, 10]}
+						step={0.1}
+						value={offsetY}
+						onChange={setOffsetY}
+					/>
+					<Slider
+						title='Rotation Angle'
+						range={[-Math.PI * 2, Math.PI * 2]}
+						step={Math.PI / 24}
+						value={rotation}
+						onChange={value => setRotation(round(value, 2))}
+					/>
+					<Slider
+						title='Scale'
+						range={[0, 2]}
+						step={0.01}
+						value={scale}
+						onChange={setScale}
+					/>
+				</div>
+				<div className='flex-1'>
+					<Canvas ref={canvasRef}/>
+				</div>
+			</div>
+		</PageLayout>
 	);
 };
 

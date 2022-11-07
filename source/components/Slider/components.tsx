@@ -6,7 +6,7 @@ import {palette} from 'style';
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2.7rem;
+  gap: 2rem;
 `;
 
 const SliderWrapper = styled(Slider.Root)`
@@ -36,8 +36,8 @@ const Range = styled(Slider.Range)`
 `;
 
 const Thumb = styled(Slider.Thumb)`
-  height: calc(var(--slider-height) * 3);
-  aspect-ratio: 1 / 1;
+  height: calc(var(--slider-height) * 2.7);
+  aspect-ratio: 3 / 2;
   display: flex;
   align-items: center;
   justify-content: center;
