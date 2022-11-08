@@ -57,7 +57,7 @@ const TransformationsPage = () => {
 					/>
 					<Slider
 						title='Rotation Angle'
-						range={[-Math.PI * 2, Math.PI * 2]}
+						range={[-Math.PI, Math.PI]}
 						step={Math.PI / 24}
 						value={rotation}
 						onChange={value => setRotation(round(value, 2))}
