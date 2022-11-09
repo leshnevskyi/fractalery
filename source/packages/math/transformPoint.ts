@@ -4,8 +4,7 @@ import type {Point, Transformation} from './types';
 
 function transformPoint(
 	point: Point, 
-	origin: Point,
-	{offset, scale, rotation}: Transformation,
+	{offset, scale, rotation, origin}: Transformation,
 ): Point {
 	const coordinateMatrix = add(
 		multiply(

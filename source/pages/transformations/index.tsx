@@ -1,16 +1,20 @@
 import {useEffect, useState, useRef} from 'react';
 import {round} from 'lodash';
 
-import {Canvas} from './components';
+import {Canvas, Polygon} from './components';
 import {PageLayout, Slider} from 'components';
 
 import {useElement} from 'hooks';
 
 import render from './renderer';
+import {getRegularPolygonPoints} from 'packages/math';
 import {setupCanvas} from 'packages/canvas';
 
 const TransformationsPage = () => {
 	const [canvasRef, canvas] = useElement<HTMLCanvasElement>();
+
+	const [originPointIndex, setOriginPointIndex] = useState<number>();
+	const [contextScaleFactor, setContextScaleFactor] = useState(100);
 	const [polygonSideCount, setPolygonSideCount] = useState(6);
 	const [offsetX, setOffsetX] = useState(0);
 	const [offsetY, setOffsetY] = useState(0);
@@ -28,20 +32,41 @@ const TransformationsPage = () => {
 	useEffect(() => {
 		if (!renderingContextRef.current) return;
 
-		render(renderingContextRef.current, polygonSideCount, {
+		const points = getRegularPolygonPoints(polygonSideCount);
+
+		render(renderingContextRef.current, contextScaleFactor, points, {
 			offset: {
 				x: offsetX,
 				y: offsetY,
 			},
 			scale,
 			rotation,
+			origin: originPointIndex === undefined 
+				? {x: 0, y: 0} 
+				: points?.[originPointIndex],
 		});
-	}, [canvas, polygonSideCount, offsetX, offsetY, scale, rotation]);
+	}, [
+		canvas, 
+		polygonSideCount, 
+		offsetX, 
+		offsetY, 
+		scale, 
+		rotation, 
+		originPointIndex,
+		contextScaleFactor,
+	]);
 
 	return (
 		<PageLayout>
 			<div className='flex w-full h-full'>
 				<div className='flex flex-col w-1/3 gap-20'>
+					<div>
+						<Polygon 
+							sideCount={polygonSideCount}
+							selectedPointIndex={originPointIndex}
+							handlePointSelection={index => setOriginPointIndex(index)}
+						/>
+					</div>
 					<Slider
 						title='Number of Polygon Sides'
 						range={[3, 9]}
@@ -79,7 +104,21 @@ const TransformationsPage = () => {
 					/>
 				</div>
 				<div className='flex-1'>
-					<Canvas ref={canvasRef}/>
+					<Canvas 
+						ref={canvasRef}
+						onWheel={event => {
+							event.preventDefault();	
+							event.stopPropagation();
+
+							setContextScaleFactor(prevScaleFactor => {
+								if (prevScaleFactor < 100 && event.deltaY < 0) {
+									return prevScaleFactor;
+								}
+
+								return prevScaleFactor + event.deltaY;
+							});
+						}}
+					/>
 				</div>
 			</div>
 		</PageLayout>

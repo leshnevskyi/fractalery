@@ -2,18 +2,17 @@ import {
 	map,
 	Range, 
 	transformPoint,
-	getRegularPolygonPoints,
 } from 'packages/math';
 import type {Point, Transformation} from 'packages/math';
 
 function render(
 	context: CanvasRenderingContext2D, 
-	polygonSideCount: number,
+	contextScaleFactor: number,
+	points: Point[],
 	transformation: Transformation
 ) {
 	const canvas = context.canvas;
 
-	const contextScaleFactor = 150;
 	const contextOrigin: Point = {
 		x: canvas.width / 2,
 		y: canvas.height / 2,
@@ -109,10 +108,8 @@ function render(
 
 	renderGrid();
 
-	const points = getRegularPolygonPoints(polygonSideCount);
-	const origin = points[1];
 	const transformedPoints: Point[] = points.map(point => {
-		return transformPoint(point, origin, transformation);
+		return transformPoint(point, transformation);
 	});
 
 	const pointRadius = 0.1;

@@ -12,6 +12,7 @@ interface Transformation {
 	offset: {x: number; y: number};
 	scale: number;
 	rotation: number;
+	origin: Point; 
 }
 
 export type {DifferentiableFunction, Point, Transformation};

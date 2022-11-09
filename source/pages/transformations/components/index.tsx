@@ -6,3 +6,4 @@ const Canvas = styled.canvas`
 `;
 
 export {Canvas};
+export {default as Polygon} from './Polygon';
