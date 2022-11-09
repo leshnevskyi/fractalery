@@ -21,9 +21,11 @@ function getRegularPolygonPoints(sideCount: number, radius = 1) {
 	const angle = 2 * Math.PI / sideCount;
 
 	return [...Array(sideCount)].map((_, index) => {
+		const currAngle = index * angle + Math.PI / 2;
+
 		return {
-			x: radius * Math.cos(index * angle),
-			y: radius * Math.sin(index * angle),
+			x: radius * Math.cos(currAngle),
+			y: radius * Math.sin(currAngle),
 		};
 	}) as Point[];
 }
