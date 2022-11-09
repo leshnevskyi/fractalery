@@ -8,6 +8,7 @@ import type {Point, Transformation} from 'packages/math';
 
 function render(
 	context: CanvasRenderingContext2D, 
+	polygonSideCount: number,
 	transformation: Transformation
 ) {
 	const canvas = context.canvas;
@@ -105,7 +106,7 @@ function render(
 
 	renderGrid();
 
-	const points = getRegularPolygonPoints(6);
+	const points = getRegularPolygonPoints(polygonSideCount);
 	const origin = points[1];
 	const transformedPoints: Point[] = points.map(point => {
 		return transformPoint(point, origin, transformation);
