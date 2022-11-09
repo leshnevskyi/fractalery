@@ -82,24 +82,27 @@ function render(
 				-1 * contextScaleFactor
 			));
 		}
+
+		const xOffset = -10;
+		const yOffset = 50;
 		
 		for (let x = 0; x > xRange.from; x -= step) {
-			renderText(x.toString(), x, 0, -10, 50);
+			renderText(x.toString(), x, 0, xOffset, yOffset);
 			drawVerticalLine(x);
 		}
 
 		for (let x = 0; x < xRange.to; x += step) {
-			renderText(x.toString(), x, 0, -10, 50);
+			renderText(x.toString(), x, 0, xOffset, yOffset);
 			drawVerticalLine(x);
 		}
 
 		for (let y = 0; y > yRange.from; y -= step) {
-			renderText(y.toString(), 0, y, -10, 50);
+			renderText(y.toString(), 0, y, xOffset, yOffset);
 			drawHorizontalLine(y);
 		}
 
 		for (let y = 0; y < yRange.to; y += step) {
-			renderText(y.toString(), 0, y, -10, 50);
+			renderText(y.toString(), 0, y, xOffset, yOffset);
 			drawHorizontalLine(y);
 		}
 	}
