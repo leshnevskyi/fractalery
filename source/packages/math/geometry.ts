@@ -17,4 +17,15 @@ function getSquarePointsByDiagonalPoints(
 	];
 }
 
-export {getSquarePointsByDiagonalPoints};
+function getRegularPolygonPoints(sideCount: number, radius = 1) {
+	const angle = 2 * Math.PI / sideCount;
+
+	return [...Array(sideCount)].map((_, index) => {
+		return {
+			x: radius * Math.cos(index * angle),
+			y: radius * Math.sin(index * angle),
+		};
+	}) as Point[];
+}
+
+export {getSquarePointsByDiagonalPoints, getRegularPolygonPoints};

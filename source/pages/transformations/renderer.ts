@@ -1,7 +1,8 @@
 import {
+	map,
 	Range, 
-	transformPoint, 
-	getSquarePointsByDiagonalPoints,
+	transformPoint,
+	getRegularPolygonPoints,
 } from 'packages/math';
 import type {Point, Transformation} from 'packages/math';
 
@@ -10,9 +11,8 @@ function render(
 	transformation: Transformation
 ) {
 	const canvas = context.canvas;
-	const aspectRatio = canvas.width / canvas.height;
 
-	const contextScaleFactor = 300;
+	const contextScaleFactor = 150;
 	const contextOrigin: Point = {
 		x: canvas.width / 2,
 		y: canvas.height / 2,
@@ -25,7 +25,9 @@ function render(
 	const xRange = new Range(0, canvas.width)
 		.offset(-contextOrigin.x)
 		.scale(1 / contextScaleFactor);
-	const yRange = xRange.scale(1 / aspectRatio);
+	const yRange = new Range(0, canvas.height)
+		.offset(-contextOrigin.y)
+		.scale(1 / contextScaleFactor);
 
 	context.clearRect(xRange.from, yRange.from, xRange.length, yRange.length);
 
@@ -33,21 +35,12 @@ function render(
 	
 	function renderGrid() {
 		const step = 1;
-		context.lineWidth = defaultLineWidth;
 
 		function drawVerticalLine(x: number) {
 			context.beginPath();
 			context.moveTo(x, yRange.from);
 			context.lineTo(x, yRange.to);
 			context.stroke();
-		}
-
-		for (let x = 0; x > xRange.from; x -= step) {
-			drawVerticalLine(x);
-		}
-
-		for (let x = 0; x < xRange.to; x += step) {
-			drawVerticalLine(x);
 		}
 
 		function drawHorizontalLine(y: number) {
@@ -57,47 +50,70 @@ function render(
 			context.stroke();
 		}
 
-		console.log(yRange);
+		context.lineWidth = defaultLineWidth * 5;
+		drawVerticalLine(0);
+		drawHorizontalLine(0);
+
+		context.lineWidth = defaultLineWidth;
+
+		const pixelXRange = xRange.scale(contextScaleFactor);
+		const pixelYRange = yRange.scale(contextScaleFactor);
+
+		context.font = '3vw sans-serif';
+		context.textAlign = 'end';
+
+		function renderText(
+			text: string, x: number, y: number, offsetX = 0, offsetY = 0
+		) {
+			context.setTransform(transformMatrix.scaleSelf(
+				1 / contextScaleFactor, 
+				-1 / contextScaleFactor
+			));
+			context.fillText(
+				text, 
+				map(x, xRange.from, xRange.to, pixelXRange.from, pixelXRange.to) 
+					+ offsetX,
+				map(-y, yRange.from, yRange.to, pixelYRange.from, pixelYRange.to) 
+					+ offsetY,
+			);
+			context.setTransform(transformMatrix.scaleSelf(
+				1 * contextScaleFactor, 
+				-1 * contextScaleFactor
+			));
+		}
 		
+		for (let x = 0; x > xRange.from; x -= step) {
+			renderText(x.toString(), x, 0, -10, 50);
+			drawVerticalLine(x);
+		}
+
+		for (let x = 0; x < xRange.to; x += step) {
+			renderText(x.toString(), x, 0, -10, 50);
+			drawVerticalLine(x);
+		}
 
 		for (let y = 0; y > yRange.from; y -= step) {
+			renderText(y.toString(), 0, y, -10, 50);
 			drawHorizontalLine(y);
 		}
 
 		for (let y = 0; y < yRange.to; y += step) {
+			renderText(y.toString(), 0, y, -10, 50);
 			drawHorizontalLine(y);
 		}
-
-
-
-		// for (
-		// 	let y = yRange.from - yRange.from % step;  
-		// 	y < yRange.to; 
-		// 	y += step
-		// ) {						
-		// 	context.lineWidth = round(y, 2) ? 1 : 3;
-		// 	const screenY = map(y, yRange.from, yRange.to, 0, canvas.height);
-
-		// 	context.beginPath();
-		// 	context.moveTo(0, screenY);
-		// 	context.lineTo(canvas.width, screenY);
-		// 	context.stroke();
-		// }
 	}
 
 	renderGrid();
 
-	const origin: Point = {x: 1, y: 1};
-
-	const points: Point[] = getSquarePointsByDiagonalPoints(
-		{x: -1, y: -1}, {x: 1, y: 1}
-	).map(point => {
+	const points = getRegularPolygonPoints(6);
+	const origin = points[1];
+	const transformedPoints: Point[] = points.map(point => {
 		return transformPoint(point, origin, transformation);
 	});
 
 	const pointRadius = 0.1;
 
-	points.forEach(point => {
+	transformedPoints.forEach(point => {
 		context.beginPath();
 		context.stroke();
 		context.arc(
@@ -110,19 +126,13 @@ function render(
 		context.fill();
 	});
 
-	// context.beginPath();
-	// context.moveTo(
-	// 	map(points[0].x, xRange.from, xRange.to, 0, width),
-	// 	map(-points[0].y, yRange.from, yRange.to, 0, height),
-	// );
-	// context.lineWidth = 3;
-	// points.forEach(point => {
-	// 	context.lineTo(
-	// 		map(point.x, xRange.from, xRange.to, 0, width),
-	// 		map(-point.y, yRange.from, yRange.to, 0, height),
-	// 	);
-	// 	context.stroke();
-	// });
+	context.beginPath();
+	context.lineWidth = defaultLineWidth * 5;
+
+	[...transformedPoints, transformedPoints[0]].forEach(point => {
+		context.lineTo(point.x, point.y);
+		context.stroke();
+	});
 }
 
 export default render;
