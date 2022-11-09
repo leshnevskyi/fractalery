@@ -106,8 +106,7 @@ const TransformationsPage = () => {
 				<div className='flex-1'>
 					<Canvas 
 						ref={canvasRef}
-						onWheel={event => {
-							event.preventDefault();	
+						onWheel={event => {	
 							event.stopPropagation();
 
 							setContextScaleFactor(prevScaleFactor => {
