@@ -5,11 +5,12 @@ interface Props {
 	title?: string;
 	range: [number, number];
 	value: number;
+	suffix?: string;
 	step?: number;
 	onChange: (value: number) => void;
 }
 
-const Slider = ({title, range, step = 1, value, onChange}: Props) => {
+const Slider = ({title, range, step = 1, suffix, value, onChange}: Props) => {
 	return (
 		<Wrapper>
 			<Text 
@@ -34,7 +35,7 @@ const Slider = ({title, range, step = 1, value, onChange}: Props) => {
 						color='tuftbush'
 						stretch='expanded'
 						weight={9}
-					>{value}</Text>
+					>{value}{suffix}</Text>
 				</Thumb>
 			</SliderWrapper>
 		</Wrapper>

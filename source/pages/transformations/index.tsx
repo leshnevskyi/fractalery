@@ -7,7 +7,7 @@ import {PageLayout, Slider} from 'components';
 import {useElement} from 'hooks';
 
 import render from './renderer';
-import {getRegularPolygonPoints} from 'packages/math';
+import {getRegularPolygonPoints, map} from 'packages/math';
 import {setupCanvas} from 'packages/canvas';
 
 const TransformationsPage = () => {
@@ -20,6 +20,8 @@ const TransformationsPage = () => {
 	const [offsetY, setOffsetY] = useState(0);
 	const [scale, setScale] = useState(1);
 	const [rotation, setRotation] = useState(0);
+	const [wtf, setWtf] = useState(0);
+	const [circumscribedCircleRadius, setCircumscribedCircleRadius] = useState(1);
 	const renderingContextRef = useRef<CanvasRenderingContext2D | null>();
 
 	useEffect(() => {
@@ -32,15 +34,17 @@ const TransformationsPage = () => {
 	useEffect(() => {
 		if (!renderingContextRef.current) return;
 
-		const points = getRegularPolygonPoints(polygonSideCount);
+		const points = getRegularPolygonPoints(
+			polygonSideCount, circumscribedCircleRadius
+		);
 
 		render(renderingContextRef.current, contextScaleFactor, points, {
 			offset: {
 				x: offsetX,
 				y: offsetY,
 			},
-			scale,
-			rotation,
+			scale: map(wtf, 0, 360, 1, 3),
+			rotation: wtf * (Math.PI / 180),
 			origin: originPointIndex === undefined 
 				? {x: 0, y: 0} 
 				: points?.[originPointIndex],
@@ -54,13 +58,15 @@ const TransformationsPage = () => {
 		rotation, 
 		originPointIndex,
 		contextScaleFactor,
+		wtf,
+		circumscribedCircleRadius,
 	]);
 
 	return (
 		<PageLayout>
 			<div className='flex w-full h-full'>
 				<div className='flex flex-col w-1/3 gap-20'>
-					<div>
+					<div style={{marginBottom: -50}}>
 						<Polygon 
 							sideCount={polygonSideCount}
 							selectedPointIndex={originPointIndex}
@@ -73,6 +79,13 @@ const TransformationsPage = () => {
 						step={1}
 						value={polygonSideCount}
 						onChange={setPolygonSideCount}
+					/>
+					<Slider
+						title='Circumscribed Circle Radius'
+						range={[0.5, 5]}
+						step={0.5}
+						value={circumscribedCircleRadius}
+						onChange={setCircumscribedCircleRadius}
 					/>
 					<Slider
 						title='Center X Position'
@@ -89,18 +102,12 @@ const TransformationsPage = () => {
 						onChange={setOffsetY}
 					/>
 					<Slider
-						title='Rotation Angle'
-						range={[-Math.PI, Math.PI]}
-						step={Math.PI / 24}
-						value={rotation}
-						onChange={value => setRotation(round(value, 2))}
-					/>
-					<Slider
-						title='Scale'
-						range={[0, 2]}
-						step={0.01}
-						value={scale}
-						onChange={setScale}
+						title='Simultaneous rotation with upscaling'
+						range={[0, 360]}
+						suffix='°'
+						step={1}
+						value={wtf}
+						onChange={setWtf}
 					/>
 				</div>
 				<div className='flex-1'>
