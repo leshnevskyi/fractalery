@@ -2,7 +2,7 @@ import {useEffect, useState, useRef} from 'react';
 import {round} from 'lodash';
 
 import {Canvas, Polygon} from './components';
-import {PageLayout, Slider} from 'components';
+import {PageLayout, Slider, Button} from 'components';
 
 import {useElement} from 'hooks';
 
@@ -110,7 +110,18 @@ const TransformationsPage = () => {
 						onChange={setWtf}
 					/>
 				</div>
-				<div className='flex-1'>
+				<div className='flex-1 flex flex-col relative'>
+					<Button
+						as='a'
+						onClick={event => {
+							if (!canvas) return;
+
+							event.currentTarget.download = 'chart.png';
+							event.currentTarget.href = canvas.toDataURL();
+						}}
+						className='self-start'
+						style={{position: 'absolute', top: -10, left: -10}}
+					>Export</Button>
 					<Canvas 
 						ref={canvasRef}
 						onWheel={event => {	
