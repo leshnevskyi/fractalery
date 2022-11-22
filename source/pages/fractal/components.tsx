@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 
-import {Text} from 'components';
-
 const FractalSection = styled.div`
   position: relative;
   display: flex;
@@ -13,14 +11,13 @@ const FractalSection = styled.div`
 const Canvas = styled.canvas`
   width: 100vh;
   height: 50vh;
-  margin-right: -20rem;
 `;
 
 const ControlContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 7rem;
+  gap: 5rem;
 `;
 
 const ControlWrapper = styled.div`
@@ -29,14 +26,4 @@ const ControlWrapper = styled.div`
   gap: 2.7rem;
 `;
 
-const ControlLabel = styled(Text).attrs({
-	size: 5,
-	color: 'red',
-	stretch: 'expanded',
-	weight: 9,
-})`
-  display: flex;
-  align-items: center;
-`;
-
-export {FractalSection, Canvas, ControlContainer, ControlWrapper, ControlLabel};
+export {FractalSection, Canvas, ControlContainer, ControlWrapper};

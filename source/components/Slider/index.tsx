@@ -1,5 +1,6 @@
 import {Text} from '../typography';
 import {Wrapper, SliderWrapper, Track, Range, Thumb} from './components';
+import ControlLabel from '../ControlLabel';
 
 interface Props {
 	title?: string;
@@ -13,12 +14,7 @@ interface Props {
 const Slider = ({title, range, step = 1, suffix, value, onChange}: Props) => {
 	return (
 		<Wrapper>
-			<Text 
-				size={5}
-				color='red'
-				stretch='expanded'
-				weight={9}
-			>{title}</Text>
+			<ControlLabel>{title}</ControlLabel>
 			<SliderWrapper
 				min={range[0]}
 				max={range[1]}

@@ -64,10 +64,13 @@ function fractalRenderer(
 				map(y, 0, height, yRange.from, yRange.to)
 			));
 	
+			let nextValue = new Complex(0, 0);
+
 			for (let i = 0; i < iterationCount; i++) {
-				const nextValue = newtonMethodGen.next().value;
-				pixelRenderer(nextValue, x, y);
+				nextValue = newtonMethodGen.next().value;
 			}
+
+			pixelRenderer(nextValue, x, y);
 		}
 	}
 }

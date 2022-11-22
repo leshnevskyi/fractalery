@@ -2,7 +2,14 @@ import {useState, useEffect} from 'react';
 import {isString, clamp} from 'lodash';
 import BezierEasing from 'bezier-easing';
 
-import {PageLayout, Text, Button, Slider, ColorSelector} from 'components';
+import {
+	PageLayout, 
+	Text,
+	Button,
+	Slider,
+	ColorSelector,
+	Heading,
+} from 'components';
 import {
 	ContentWrapper,
 	FigureContainer,
@@ -14,6 +21,8 @@ import {
 import {setupCanvas} from 'packages/canvas';
 import {Color} from 'packages/colors';
 import type {Rgb} from 'packages/colors';
+
+import meta from './meta.json';
 
 const defaultEasingFn = BezierEasing(0.3, 0, 0.1, 1);
 
@@ -83,7 +92,7 @@ const renderImage = (
 	}
 };
 
-const ColorSchemePage = () => {
+const ColorModelPage = () => {
 	const [color, setColor] = useState(new Color({r: 0, g: 0, b: 0}));
 	const rgb = color.rgb;
 	const hsl = color.hsl;
@@ -188,107 +197,123 @@ const ColorSchemePage = () => {
 		setColor(new Color({r, g, b}));
 	}
 
+	const renderedImportButton = <Button as='label'>
+		Import
+		<input
+			type='file'
+			className='w-full h-full hidden'
+			accept='.jpg, .jpeg, .png'
+			onChange={handleFileUpload}
+		/>
+	</Button>;
+
 	return (
-		<PageLayout>
-			<ContentWrapper>
-				<FigureContainer>
-					<FigureWrapper>
-						<div className='flex gap-10'>
-							<Text size={5} weight={7}>Original</Text>
-							<Button as='label'>
-								Import
-								<input
-									type='file'
-									className='w-full h-full hidden'
-									accept='.jpg, .jpeg, .png'
-									onChange={handleFileUpload}
-								/>
-							</Button>
+		<PageLayout meta={meta}>
+			{image ? (
+				<div className='flex flex-col gap-5'>
+					<ContentWrapper>
+						<FigureContainer>
+							<FigureWrapper>
+								<div className='flex gap-10'>
+									<Text size={5} weight={7}>Original</Text>
+									{renderedImportButton}
+								</div>
+								{image && (
+									<>
+										<FigureCanvas
+											ref={canvas => rgbCanvas = canvas}
+											onMouseMove={handleMouseMove}
+										/>
+										<ColorComponents components={
+												rgb as unknown as Record<string, number>
+										}/>
+									</>
+								)}
+							</FigureWrapper>
+							<FigureWrapper>
+								<div className='flex gap-10'>
+									<Text size={5} weight={7}>Modified</Text>
+									<Button
+										as='a'
+										onClick={event => {
+											if (!hslCanvas || !imageFile) return;
+											event.currentTarget.download = `${imageFile.name}`;
+											event.currentTarget.href = hslCanvas.toDataURL();
+										}}
+									>Export</Button>
+								</div>
+								{image && (
+									<>
+										<FigureCanvas
+											ref={canvas => hslCanvas = canvas}
+											onMouseMove={handleMouseMove}
+											onMouseDown={event => {
+												setSelectionStartPoint({
+													x: event.nativeEvent.offsetX,
+													y: event.nativeEvent.offsetY,
+												});
+												setSelectionEndPoint(undefined);
+											}}
+											onMouseUp={event => setSelectionEndPoint({
+												x: event.nativeEvent.offsetX, 
+												y: event.nativeEvent.offsetY,
+											})}
+										/>
+										<ColorComponents components={
+												hsl as unknown as Record<string, number>
+										}/>
+									</>
+								)}
+							</FigureWrapper>
+						</FigureContainer>
+					</ContentWrapper>
+					<div className='w-full flex flex-col gap-10 items-center'>
+						<div className='w-full flex justify-between items-end'>
+							<ColorSelector
+								colors={[...Array(360 / hueStep)].map((_, index) => {
+									return `hsl(${
+										hueStep * (index + 1) - hueStep / 2
+									}, 100%, 50%)`;
+								})}
+								value={selectedHueRangeIndex}
+								onChange={index => setSelectedHueRangeIndex(index)}
+							/>
+							<Slider
+								title='Hue'
+								range={[-360, 360]}
+								step={10}
+								value={hueModifier}
+								onChange={value => setHueModifier(value)}
+							/>
+							<Slider
+								title='Saturation'
+								range={[-1, 1]}
+								step={0.1}
+								value={saturationModifier}
+								onChange={value => setSaturationModifier(value)}
+							/>
+							<Slider
+								title='Lightness'
+								range={[-1, 1]}
+								step={0.1}
+								value={lightnessModifier}
+								onChange={value => setLightnessModifier(value)}
+							/>
 						</div>
-						{image && (
-							<>
-								<FigureCanvas 
-									ref={canvas => rgbCanvas = canvas}
-									onMouseMove={handleMouseMove}
-								/>
-								<ColorComponents components={
-									rgb as unknown as Record<string, number>
-								}/>
-							</>
-						)}
-					</FigureWrapper>
-					<FigureWrapper>
-						<div className='flex gap-10'>
-							<Text size={5} weight={7}>Modified</Text>
-							<Button
-								as='a'
-								onClick={event => {
-									if (!hslCanvas || !imageFile) return;
-
-									event.currentTarget.download = `${imageFile.name}`;
-									event.currentTarget.href = hslCanvas.toDataURL();
-								}}
-							>Export</Button>
-						</div>
-						{image && (
-							<>
-								<FigureCanvas
-									ref={canvas => hslCanvas = canvas}
-									onMouseMove={handleMouseMove}
-									onMouseDown={event => {
-										setSelectionStartPoint({
-											x: event.nativeEvent.offsetX, 
-											y: event.nativeEvent.offsetY,
-										});
-
-										setSelectionEndPoint(undefined);
-									}}
-									onMouseUp={event => setSelectionEndPoint({
-										x: event.nativeEvent.offsetX, y: event.nativeEvent.offsetY,
-									})}
-								/>
-								<ColorComponents components={
-								hsl as unknown as Record<string, number>
-								}/>
-							</>
-						)}
-					</FigureWrapper>
-				</FigureContainer>
-			</ContentWrapper>
-			<div className='w-full flex flex-col gap-10 items-center'>
-				<div className='w-full mt-12 flex justify-between'>
-					<Slider
-						title='Hue'
-						range={[-360, 360]}
-						step={10}
-						value={hueModifier}
-						onChange={value => setHueModifier(value)}
-					/>
-					<Slider
-						title='Saturation'
-						range={[-1, 1]}
-						step={0.1}
-						value={saturationModifier}
-						onChange={value => setSaturationModifier(value)}
-					/>
-					<Slider
-						title='Lightness'
-						range={[-1, 1]}
-						step={0.1}
-						value={lightnessModifier}
-						onChange={value => setLightnessModifier(value)}
-					/>
+					</div>
 				</div>
-				<ColorSelector
-					colors={[...Array(360 / hueStep)].map((_, index) => {
-						return `hsl(${hueStep * (index + 1) - hueStep / 2}, 100%, 50%)`;
-					})}
-					value={selectedHueRangeIndex}
-					onChange={index => setSelectedHueRangeIndex(index)}
-				/>
-			</div>
+			) : (
+				<div className='
+					w-full h-full flex flex-col gap-20 items-center justify-center
+				'>
+					<Heading as='span' level={1}>
+						Let&apos;s import an image to mess around with!
+					</Heading>
+					{renderedImportButton}
+				</div>
+			)}
 		</PageLayout>
 	);
 };
 
-export default ColorSchemePage;
+export default ColorModelPage;

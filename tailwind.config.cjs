@@ -6,6 +6,9 @@ module.exports = {
 	],
 	theme: {
 		extend: {
+			fontFamily: {
+				'display': 'Erica One',
+			},
 			colors: {
 				red: '#FF0000',
 				orange: '#FF6400',

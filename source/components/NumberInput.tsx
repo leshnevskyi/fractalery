@@ -11,7 +11,6 @@ const Wrapper = styled.input.attrs({type: 'number'})`
 	width: 8rem;
 	height: 4rem;
 	border: 2px solid ${palette.red};
-	font-size: inherit;
 	font-weight: inherit;
 	color: inherit;
 	border-radius: 100vmax;
@@ -33,6 +32,7 @@ const NumberInput = ({value, onChange}: Props) => {
 		<Wrapper 
 			value={value}
 			onChange={event => onChange(event.target.valueAsNumber)}
+			style={{fontSize: '2rem'}}
 		/>
 	);
 };

@@ -7,6 +7,11 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  margin-bottom: 1rem;
+
+  & * {
+    transition: 0.1s;
+  }
 `;
 
 const SliderWrapper = styled(Slider.Root)`

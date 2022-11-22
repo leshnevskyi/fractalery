@@ -1,13 +1,42 @@
 import {Style} from 'style';
-import TransformationsPage from 'pages/transformations';
+import {
+	LandingPage,
+	FractalPage, 
+	ColorModelPage, 
+	TransformationsPage,
+} from 'pages';
+
+import {
+	createBrowserRouter,
+	RouterProvider,
+} from 'react-router-dom';
 
 import 'style/index.css';
+
+const router = createBrowserRouter([
+	{
+		path: '/',
+		element: <LandingPage/>,
+	},
+	{
+		path: '/fractal',
+		element: <FractalPage/>,
+	},
+	{
+		path: '/color-model',
+		element: <ColorModelPage/>,
+	},
+	{
+		path: '/transformations',
+		element: <TransformationsPage/>,
+	},
+]);
 
 function App() {
 	return (
 		<>
 			<Style/>
-			<TransformationsPage/>
+			<RouterProvider router={router}/>
 		</>
 	);
 }

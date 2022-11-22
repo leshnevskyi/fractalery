@@ -10,6 +10,8 @@ import render from './renderer';
 import {getRegularPolygonPoints, map} from 'packages/math';
 import {setupCanvas} from 'packages/canvas';
 
+import meta from './meta.json';
+
 const TransformationsPage = () => {
 	const [canvasRef, canvas] = useElement<HTMLCanvasElement>();
 
@@ -63,10 +65,10 @@ const TransformationsPage = () => {
 	]);
 
 	return (
-		<PageLayout>
+		<PageLayout meta={meta}>
 			<div className='flex w-full h-full'>
-				<div className='flex flex-col w-1/3 gap-20'>
-					<div style={{marginBottom: -50}}>
+				<div className='flex flex-col w-1/3 gap-16'>
+					<div style={{marginBottom: -20}}>
 						<Polygon 
 							sideCount={polygonSideCount}
 							selectedPointIndex={originPointIndex}
@@ -102,7 +104,7 @@ const TransformationsPage = () => {
 						onChange={setOffsetY}
 					/>
 					<Slider
-						title='Simultaneous rotation with upscaling'
+						title='Rotation with upscaling'
 						range={[0, 360]}
 						suffix='°'
 						step={1}
@@ -120,22 +122,22 @@ const TransformationsPage = () => {
 							event.currentTarget.href = canvas.toDataURL();
 						}}
 						className='self-start'
-						style={{position: 'absolute', top: -10, left: -10}}
+						style={{position: 'absolute', top: 25, left: -10}}
 					>Export</Button>
-					<Canvas 
-						ref={canvasRef}
-						onWheel={event => {	
-							event.stopPropagation();
-
-							setContextScaleFactor(prevScaleFactor => {
-								if (prevScaleFactor < 100 && event.deltaY < 0) {
-									return prevScaleFactor;
-								}
-
-								return prevScaleFactor + event.deltaY;
-							});
-						}}
-					/>
+					<div className='h-full py-20'>
+						<Canvas
+							ref={canvasRef}
+							onWheel={event => {
+								event.stopPropagation();
+								setContextScaleFactor(prevScaleFactor => {
+									if (prevScaleFactor < 100 && event.deltaY < 0) {
+										return prevScaleFactor;
+									}
+									return prevScaleFactor + event.deltaY;
+								});
+							}}
+						/>
+					</div>
 				</div>
 			</div>
 		</PageLayout>

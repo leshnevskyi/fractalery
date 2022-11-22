@@ -33,6 +33,7 @@ const Heading = styled(Text).attrs(({level}: HeadingProps) => {
   font-family: 'Erica One', sans-serif;
   font-size: var(--font-size-${({level = 1}) => 10 - level});
   font-weight: 900;
+  line-height: 1em;
 `;
 
 export {Text, Heading};

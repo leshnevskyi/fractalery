@@ -4,7 +4,6 @@ const Wrapper = styled.div`
 	position: relative;
 	display: flex;
 	align-items: center;
-	gap: 0.5rem;
 `;
 
 interface ColorProps {
@@ -13,7 +12,7 @@ interface ColorProps {
 }
 
 const Color = styled.div<ColorProps>`
-	height: 7rem;
+	height: 6rem;
 	aspect-ratio: 1 / 1;
 	border-radius: 100vmax;
 	border: 5px solid white;
@@ -21,6 +20,7 @@ const Color = styled.div<ColorProps>`
 	opacity: ${({isSelected}) => isSelected ? 1 : 0.9};
 	transform: scale(${({isSelected}) => isSelected ? 1 : 0.7});
 	transition: 0.5s;
+	cursor: pointer;
 	
 	&:hover {
 		transform: scale(1);
