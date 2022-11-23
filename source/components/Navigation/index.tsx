@@ -32,7 +32,9 @@ const Navigation = () => {
 	});
 
 	return (
-		<div className='flex self-center gap-20'>
+		<div className='flex self-center gap-20 py-7 px-20 bg-white
+			rounded-full shadow-lg shadow-orange/10
+		'>
 			{renderedLinks}
 		</div>
 	);

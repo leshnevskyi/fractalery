@@ -16,6 +16,7 @@ import {
 	NumberInput,
 	ControlLabel,
 	Tooltip,
+	Alert,
 } from 'components';
 
 import {setupCanvas} from 'packages/canvas';
@@ -73,6 +74,17 @@ const FractalPage = () => {
 
 	return (
 		<PageLayout meta={meta}>
+			<Alert 
+				isDisplayed={
+					iterationCount > 30 && Boolean(constant.im && constant.re)
+				} 
+				type='warning'
+			>
+				Rendering might take a long time bacause of the big number of iterations
+			</Alert>
+			<Alert isDisplayed={Boolean(!constant.im || !constant.re)} type='error'>
+				Constant number must be present
+			</Alert>
 			<div className='flex flex-col w-full'>
 				<Tooltip title={'Newton\'s fractal formula'}>
 					<Heading as='span' level={1}>f(z) = z<sup>k</sup> + c</Heading>

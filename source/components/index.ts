@@ -7,4 +7,5 @@ export {default as ControlLabel} from './ControlLabel';
 export {default as ModalTrigger} from './ModalTrigger';
 export {default as Modal} from './Modal';
 export {default as Tooltip} from './Tooltip';
+export {default as Alert} from './Alert';
 export {Text, Heading} from './typography';

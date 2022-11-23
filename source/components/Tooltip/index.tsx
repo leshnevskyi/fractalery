@@ -26,7 +26,7 @@ const Tooltip = ({children, title, className}: Props) => {
 						className='
 							py-3 px-10 bg-white absolute -bottom-2 translate-y-full 
 							rounded-full text-orange font-bold shadow-lg shadow-orange/10
-							text-2xl whitespace-nowrap
+							text-2xl whitespace-nowrap bg-opacity-80
 						'
 					>{title}</motion.div>
 				)}
