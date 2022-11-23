@@ -22,16 +22,21 @@ import {Complex} from 'packages/math';
 import meta from './meta.json';
 
 function createFractalRenderer(
-	exponent: number, constant: Complex, scaleFactor: number, colorIndex: number
+	exponent: number, 
+	constant: Complex, 
+	scaleFactor: number,
+	colorIndex: number,
+	iterationCount: number, 
 ) {
 	return (context: CanvasRenderingContext2D) => {
 		fractalRenderer(
-			context, 2, exponent, constant, scaleFactor, colorIndex
+			context, iterationCount, exponent, constant, scaleFactor, colorIndex
 		);
 	};
 }
 
 const FractalPage = () => {
+	const [iterationCount, setIterationCount] = useState(5);
 	const [scaleValue, setScaleValue] = useState(1);
 	const [exponent, setExponent] = useState(3);
 	const [constant, setConstant] = useState(new Complex(-1, 4));
@@ -47,10 +52,18 @@ const FractalPage = () => {
 					<ControlContainer>
 						<Slider
 							title='K value'
-							range={[3, 5]}
+							range={[3, 10]}
 							value={exponent}
 							onChange={value => {
 								setExponent(value);
+							}}
+						/>
+						<Slider
+							title='Number of iterations'
+							range={[5, 100]}
+							value={iterationCount}
+							onChange={value => {
+								setIterationCount(value);
 							}}
 						/>
 						<ControlLabel>
@@ -93,7 +106,7 @@ const FractalPage = () => {
 							&& setupCanvas(
 								canvas,
 								createFractalRenderer(
-									exponent, constant, 1 / scaleValue, colorIndex
+									exponent, constant, 1 / scaleValue, colorIndex, iterationCount
 								)
 							)
 						}
