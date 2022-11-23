@@ -7,6 +7,8 @@ function fractalRenderer(
 	constant = new Complex(-1, 4),
 	scaleFactor = 1,
 	colorIndex = 0,
+	onProgress: (value: number | undefined) => void,
+	onWorkerInit: (worker: Worker) => void,
 ) {
 	const width = context.canvas.clientWidth;
 	const height = context.canvas.clientHeight;
@@ -18,6 +20,7 @@ function fractalRenderer(
 	const worker = new Worker(new URL('./renderer.worker.ts', import.meta.url), {
 		type: 'module',
 	});
+	onWorkerInit(worker);
 
 	worker.postMessage({
 		width, 
@@ -31,12 +34,20 @@ function fractalRenderer(
 	});
 
 	worker.addEventListener('message', (event: MessageEvent) => {
+		if (typeof event.data === 'number') {
+			onProgress(event.data);
+
+			return;
+		}
+
 		for (let y = 0; y < height; y++) {
 			for (let x = 0; x < width; x++) {
 				context.fillStyle = event.data[y * width + x];
 				context.fillRect(x, y, 1, 1);
 			}
 		}
+
+		onProgress(undefined);
 	});
 }
 

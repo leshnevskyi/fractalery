@@ -32,7 +32,10 @@ globalThis.addEventListener('message', (event: MessageEvent) => {
 
 			pixelColors.push(getPixelColor(value));
 		}
+
+		globalThis.postMessage(y / height); 
 	}
 
+	globalThis.postMessage(1); 
 	globalThis.postMessage(pixelColors); 
 });

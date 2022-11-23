@@ -8,9 +8,18 @@ const FractalSection = styled.div`
   margin-top: 5rem;
 `;
 
-const Canvas = styled.canvas`
+const CanvasWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100vh;
   height: 50vh;
+`;
+
+const Canvas = styled.canvas`
+  width: 100%;
+  height: 100%;
 `;
 
 const ControlContainer = styled.div`
@@ -26,4 +35,6 @@ const ControlWrapper = styled.div`
   gap: 2.7rem;
 `;
 
-export {FractalSection, Canvas, ControlContainer, ControlWrapper};
+export {
+	FractalSection, CanvasWrapper, Canvas, ControlContainer, ControlWrapper,
+};

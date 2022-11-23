@@ -4,6 +4,7 @@ const Wrapper = styled.div`
 	position: relative;
 	display: flex;
 	align-items: center;
+	margin: -5% -5%;
 `;
 
 interface ColorProps {

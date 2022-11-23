@@ -1,8 +1,10 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+import {AnimatePresence, motion} from 'framer-motion';
 
 import {
 	FractalSection, 
-	Canvas, 
+	Canvas,
+	CanvasWrapper, 
 	ControlContainer, 
 	ControlWrapper,
 } from './components';
@@ -21,28 +23,52 @@ import {Complex} from 'packages/math';
 
 import meta from './meta.json';
 
-function createFractalRenderer(
-	exponent: number, 
-	constant: Complex, 
-	scaleFactor: number,
-	colorIndex: number,
-	iterationCount: number, 
-) {
-	return (context: CanvasRenderingContext2D) => {
-		fractalRenderer(
-			context, iterationCount, exponent, constant, scaleFactor, colorIndex
-		);
-	};
-}
-
 const FractalPage = () => {
 	const [iterationCount, setIterationCount] = useState(5);
-	const [scaleValue, setScaleValue] = useState(1);
+	const [scaleFactor, setScaleFactor] = useState(1);
 	const [exponent, setExponent] = useState(3);
 	const [constant, setConstant] = useState(new Complex(-1, 4));
+	const [_, setRenderingWorker] = useState<Worker>();
 
 	const colors = ['black', 'blue', 'red'];
 	const [colorIndex, setColorIndex] = useState(2);
+
+	const [progress, setProgress] = useState<number>();
+
+	const [canvasElement, setCanvasElement] = useState<
+		HTMLCanvasElement | null
+	>(null);
+	const renderingContext = canvasElement?.getContext('2d');
+
+	useEffect(() => {
+		canvasElement && setupCanvas(canvasElement);
+	}, [canvasElement]);
+
+	useEffect(() => {
+		if (!renderingContext) return;
+
+		fractalRenderer(
+			renderingContext, 
+			iterationCount, 
+			exponent, 
+			constant, 
+			1 / scaleFactor, 
+			colorIndex,
+			setProgress,
+			worker => setRenderingWorker(prevWorker => {
+				prevWorker && prevWorker.terminate();
+
+				return worker;
+			}),
+		);
+	}, [	
+		renderingContext,
+		iterationCount, 
+		exponent, 
+		constant, 
+		scaleFactor, 
+		colorIndex, 
+	]);
 
 	return (
 		<PageLayout meta={meta}>
@@ -81,15 +107,15 @@ const FractalPage = () => {
 									return new Complex(prevConstant.re, value);
 								})}
 							/>
-						&nbsp; i
+							&nbsp; i
 						</ControlLabel>
 						<Slider
 							title='Scale'
-							range={[1, 2]}
+							range={[1, 10]}
 							step={0.1}
-							value={scaleValue}
+							value={scaleFactor}
 							onChange={value => {
-								setScaleValue(value);
+								setScaleFactor(value);
 							}}
 						/>
 						<ControlWrapper>
@@ -101,16 +127,36 @@ const FractalPage = () => {
 							/>
 						</ControlWrapper>
 					</ControlContainer>
-					<Canvas
-						ref={canvas => canvas
-							&& setupCanvas(
-								canvas,
-								createFractalRenderer(
-									exponent, constant, 1 / scaleValue, colorIndex, iterationCount
-								)
-							)
-						}
-					/>
+					<CanvasWrapper>
+						<Canvas
+							ref={canvas => canvas && setCanvasElement(canvas)}
+						/>
+						<AnimatePresence>
+							{progress && (
+								<motion.div 
+									initial={{opacity: 0}}
+									animate={{opacity: 1}}
+									exit={{opacity: 0}}
+									className='
+										absolute w-full h-full flex items-center justify-center
+										bg-tuftbush bg-opacity-70
+									'
+								>
+									<div className='
+										w-2/3 h-3 bottom-0 rounded-full overflow-hidden 
+										bg-white bg-opacity-30 flex shadow-lg
+									'>
+										<div 
+											className='
+												bg-white rounded-full
+											' 
+											style={{flex: progress}}
+										/>
+									</div>
+								</motion.div>
+							)}
+						</AnimatePresence>
+					</CanvasWrapper>
 				</FractalSection>
 			</div>
 		</PageLayout>
