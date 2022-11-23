@@ -31,6 +31,7 @@ const PageLayout = ({
 			{meta && (
 				<ModalTrigger 
 					className='absolute right-40'
+					modalContent={meta.description}
 				>{meta.title}</ModalTrigger>
 			)}
 			{children}
