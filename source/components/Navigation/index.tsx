@@ -4,13 +4,13 @@ import classNames from 'classnames';
 
 enum Routes {
 	Fractal = '/fractal',
-	ColorScheme = '/color-scheme',
+	ColorScheme = '/color-model',
 	Transformations = '/transformations',
 } 
 
 const links = [
 	{title: 'Fractal', to: Routes.Fractal},
-	{title: 'Color scheme', to: Routes.ColorScheme},
+	{title: 'Color model', to: Routes.ColorScheme},
 	{title: 'Transformations', to: Routes.Transformations},
 ];
 
