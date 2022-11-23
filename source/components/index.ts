@@ -6,4 +6,5 @@ export {default as Slider} from './Slider';
 export {default as ControlLabel} from './ControlLabel';
 export {default as ModalTrigger} from './ModalTrigger';
 export {default as Modal} from './Modal';
+export {default as Tooltip} from './Tooltip';
 export {Text, Heading} from './typography';

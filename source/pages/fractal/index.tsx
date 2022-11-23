@@ -15,6 +15,7 @@ import {
 	ColorSelector,
 	NumberInput,
 	ControlLabel,
+	Tooltip,
 } from 'components';
 
 import {setupCanvas} from 'packages/canvas';
@@ -73,17 +74,21 @@ const FractalPage = () => {
 	return (
 		<PageLayout meta={meta}>
 			<div className='flex flex-col w-full'>
-				<Heading as='span' level={1}>f(z) = z<sup>k</sup> + c</Heading>
+				<Tooltip title={'Newton\'s fractal formula'}>
+					<Heading as='span' level={1}>f(z) = z<sup>k</sup> + c</Heading>
+				</Tooltip>
 				<FractalSection>
 					<ControlContainer>
-						<Slider
-							title='K value'
-							range={[3, 10]}
-							value={exponent}
-							onChange={value => {
-								setExponent(value);
-							}}
-						/>
+						<Tooltip title='Exponent of the function'>
+							<Slider
+								title='K value'
+								range={[3, 10]}
+								value={exponent}
+								onChange={value => {
+									setExponent(value);
+								}}
+							/>
+						</Tooltip>
 						<Slider
 							title='Number of iterations'
 							range={[5, 100]}
@@ -92,23 +97,25 @@ const FractalPage = () => {
 								setIterationCount(value);
 							}}
 						/>
-						<ControlLabel>
-							C = &nbsp;
-							<NumberInput
-								value={constant.re}
-								onChange={value => setConstant(prevConstant => {
-									return new Complex(value, prevConstant.im);
-								})}
-							/>
-							&nbsp; + &nbsp;
-							<NumberInput
-								value={constant.im}
-								onChange={value => setConstant(prevConstant => {
-									return new Complex(prevConstant.re, value);
-								})}
-							/>
-							&nbsp; i
-						</ControlLabel>
+						<Tooltip title='Complex number: real and imaginary parts'>
+							<ControlLabel>
+								C = &nbsp;
+								<NumberInput
+									value={constant.re}
+									onChange={value => setConstant(prevConstant => {
+										return new Complex(value, prevConstant.im);
+									})}
+								/>
+								&nbsp; + &nbsp;
+								<NumberInput
+									value={constant.im}
+									onChange={value => setConstant(prevConstant => {
+										return new Complex(prevConstant.re, value);
+									})}
+								/>
+								&nbsp; i
+							</ControlLabel>
+						</Tooltip>
 						<Slider
 							title='Scale'
 							range={[1, 10]}
@@ -144,7 +151,7 @@ const FractalPage = () => {
 								>
 									<div className='
 										w-2/3 h-3 bottom-0 rounded-full overflow-hidden 
-										bg-white bg-opacity-30 flex shadow-lg
+										bg-white bg-opacity-30 flex shadow-lg shadow-orange/30
 									'>
 										<div 
 											className='
