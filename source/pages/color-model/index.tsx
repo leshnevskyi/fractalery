@@ -268,7 +268,7 @@ const ColorModelPage = () => {
 						</FigureContainer>
 					</ContentWrapper>
 					<div className='w-full flex flex-col gap-10 items-center'>
-						<div className='w-full flex justify-between items-end'>
+						<div className='w-full flex justify-between'>
 							<ColorSelector
 								colors={[...Array(360 / hueStep)].map((_, index) => {
 									return `hsl(${
