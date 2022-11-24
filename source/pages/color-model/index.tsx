@@ -189,8 +189,8 @@ const ColorModelPage = () => {
 		if (!context) return;
 
 		const [r, g, b] = [...context.getImageData(
-			event.nativeEvent.offsetX, 
-			event.nativeEvent.offsetY,
+			event.nativeEvent.offsetX * window.devicePixelRatio, 
+			event.nativeEvent.offsetY * window.devicePixelRatio,
 			1, 1
 		).data].slice(0, 3).map(component => Math.round(component));
 
@@ -247,17 +247,14 @@ const ColorModelPage = () => {
 										<FigureCanvas
 											ref={canvas => hslCanvas = canvas}
 											onMouseMove={handleMouseMove}
-											onMouseDown={event => {
-												setSelectionStartPoint({
-													x: event.nativeEvent.offsetX,
-													y: event.nativeEvent.offsetY,
-												});
-												setSelectionEndPoint(undefined);
-											}}
 											onMouseUp={event => setSelectionEndPoint({
 												x: event.nativeEvent.offsetX, 
 												y: event.nativeEvent.offsetY,
 											})}
+											onClick={() => {
+												setSelectionStartPoint(undefined);
+												setSelectionEndPoint(undefined);
+											}}
 										/>
 										<ColorComponents components={
 												hsl as unknown as Record<string, number>
