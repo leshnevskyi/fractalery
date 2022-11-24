@@ -9,6 +9,7 @@ import {
 	Slider,
 	ColorSelector,
 	Heading,
+	Alert,
 } from 'components';
 import {
 	ContentWrapper,
@@ -113,6 +114,8 @@ const ColorModelPage = () => {
 
 	const [isSelecting, setIsSelecting] = useState(false);
 
+	const [successAlertIsDisplayed, setSuccessAlertIsDisplayed] = useState(false);
+
 	useEffect(() => {
 		image?.addEventListener('load', () => {			
 			if (!image || !rgbCanvas || !hslCanvas) return;
@@ -123,6 +126,8 @@ const ColorModelPage = () => {
 				image, 
 				rgb => Color.hslToRgb(Color.rgbToHsl(rgb))
 			);
+
+			setSuccessAlertIsDisplayed(true);
 		});
 	}, [image?.src]);
 
@@ -250,6 +255,12 @@ const ColorModelPage = () => {
 
 	return (
 		<PageLayout meta={meta}>
+			<Alert 
+				type='success'
+				isDisplayed={successAlertIsDisplayed}
+				onClose={() => setSuccessAlertIsDisplayed(false)}
+				closingTimeout={1500}
+			>Image has been successfully loaded</Alert>
 			{image ? (
 				<div className='flex flex-col gap-5'>
 					<ContentWrapper>

@@ -23,9 +23,9 @@ const renderedIcons = {
 };
 
 const color = {
-	success: 'green-500',
-	warning: 'orange',
-	error: 'red',
+	success: 'text-green-500',
+	warning: 'text-orange',
+	error: 'text-red',
 };
 
 const Alert = ({
@@ -45,8 +45,8 @@ const Alert = ({
 				<motion.div 
 					className={`
 						absolute top-10 left-1/2 -translate-x-1/2 bg-white rounded-full
-						text-${color[type]} font-medium shadow-lg shadow-orange/10 
-						py-5 px-10 bg-opacity-80 flex gap-5 items-center
+						${color[type]} font-medium shadow-lg shadow-orange/10 
+						py-5 px-10 bg-opacity-90 flex gap-5 items-center
 					`}
 					initial={{opacity: 0}}
 					animate={{opacity: 1}}
