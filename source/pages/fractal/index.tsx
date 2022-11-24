@@ -73,17 +73,19 @@ const FractalPage = () => {
 		colorIndex, 
 	]);
 
+	const constantNumberIsSet = !Number.isNaN(constant.im)
+		&& !Number.isNaN(constant.re);
+
 	return (
 		<PageLayout meta={meta}>
 			<Alert 
 				isDisplayed={
-					iterationCount > 30 && Boolean(constant.im && constant.re)
-				} 
+					iterationCount > 30 && constantNumberIsSet} 
 				type='warning'
 			>
 				Rendering might take a long time bacause of the big number of iterations
 			</Alert>
-			<Alert isDisplayed={Boolean(!constant.im || !constant.re)} type='error'>
+			<Alert isDisplayed={!constantNumberIsSet} type='error'>
 				Constant number must be present
 			</Alert>
 			<div className='flex flex-col w-full'>
