@@ -61,7 +61,7 @@ const renderImage = (
 	);
 
 	const imageData = context.getImageData(
-		0, 0, canvas.clientWidth, canvas.clientHeight
+		0, 0, canvas.width, canvas.height
 	);
 	const rgbaUint8ClampedArray = imageData.data;
 
