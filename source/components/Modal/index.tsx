@@ -22,8 +22,8 @@ const Modal = ({children, isOpen, onClose}: Props) => {
 					transition={{duration: 0.7, type: 'spring'}}
 					className='
 						absolute right-40 top-60 bottom-60 w-1/3 bg-white rounded-[3rem]
-						shadow-2xl shadow-white/50 backdrop-blur-xl bg-opacity-80
-						flex flex-col items-center p-20 text-stone-700 text-justify
+						shadow-2xl shadow-white/50 backdrop-blur-xl bg-opacity-80 font-bold
+						flex flex-col items-center p-20 text-stone-600 text-justify 
 					'
 				>
 					{children}
