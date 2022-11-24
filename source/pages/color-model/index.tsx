@@ -42,12 +42,10 @@ interface Point {
 	y: number;
 }
 
-const renderImage = (
+const getMappedImageData = (
 	canvas: HTMLCanvasElement, 
 	image: HTMLImageElement,
 	rgbMapper?: (rgb: Rgb) => Rgb,
-	selectionStartPoint?: Point,
-	selectionEndPoint?: Point,
 ) => {
 	canvas.style.aspectRatio = `${image.width} / ${image.height}`;
 	setupCanvas(canvas);
@@ -77,9 +75,16 @@ const renderImage = (
 		] = rgbMapper ? Object.values(rgbMapper({r, g, b})) : [r, g, b]);
 	}
 
-	if (!selectionStartPoint && !selectionEndPoint) {
-		context.putImageData(imageData, 0, 0);
-	} else if (selectionStartPoint && selectionEndPoint) {
+	return imageData;
+};
+
+function renderImageData(
+	context: CanvasRenderingContext2D,
+	imageData: ImageData,
+	selectionStartPoint?: Point,
+	selectionEndPoint?: Point,
+) {
+	if (selectionStartPoint && selectionEndPoint) {
 		context.putImageData(
 			imageData,
 			0, 
@@ -89,8 +94,8 @@ const renderImage = (
 			selectionEndPoint.x - selectionStartPoint.x, 
 			selectionEndPoint.y - selectionStartPoint.y,
 		);
-	}
-};
+	} else context.putImageData(imageData, 0, 0);
+}
 
 const ColorModelPage = () => {
 	const [color, setColor] = useState(new Color({r: 0, g: 0, b: 0}));
@@ -106,12 +111,18 @@ const ColorModelPage = () => {
 	const [lightnessModifier, setLightnessModifier] = useState(0);
 	const [selectedHueRangeIndex, setSelectedHueRangeIndex] = useState(0);
 
+	const [isSelecting, setIsSelecting] = useState(false);
+
 	useEffect(() => {
 		image?.addEventListener('load', () => {			
 			if (!image || !rgbCanvas || !hslCanvas) return;
 
-			renderImage(rgbCanvas, image);
-			renderImage(hslCanvas, image, rgb => Color.hslToRgb(Color.rgbToHsl(rgb)));
+			getMappedImageData(rgbCanvas, image);
+			getMappedImageData(
+				hslCanvas, 
+				image, 
+				rgb => Color.hslToRgb(Color.rgbToHsl(rgb))
+			);
 		});
 	}, [image?.src]);
 
@@ -119,6 +130,8 @@ const ColorModelPage = () => {
 
 	const [selectionStartPoint, setSelectionStartPoint] = useState<Point>();
 	const [selectionEndPoint, setSelectionEndPoint] = useState<Point>();
+
+	const [mappedImageData, setMappedImageData] = useState<ImageData>();
 
 	useEffect(() => {
 		if (!image || !hslCanvas) return;
@@ -142,21 +155,49 @@ const ColorModelPage = () => {
 			return Color.hslToRgb(modifiedHsl);
 		};
 
-		renderImage(
-			hslCanvas, 
-			image, 
-			rgbMapper,
+		const hslCanvasContext = hslCanvas?.getContext('2d');
+		const mappedImageData = getMappedImageData(hslCanvas, image, rgbMapper);
+		setMappedImageData(mappedImageData);
+
+		if (!hslCanvasContext || !mappedImageData) return;
+
+		renderImageData(
+			hslCanvasContext, 
+			mappedImageData, 	
 			selectionStartPoint,
-			selectionEndPoint, 
+			selectionEndPoint
 		);
 	}, [
 		hueModifier, 
 		saturationModifier, 
 		lightnessModifier, 
 		selectedHueRangeIndex,
-		selectionStartPoint,
-		selectionEndPoint,
 	]);
+
+	const selectionArea = selectionStartPoint && selectionEndPoint && {
+		startPoint: selectionStartPoint,
+		width: selectionEndPoint.x - selectionStartPoint.x,
+		height: selectionEndPoint.y - selectionStartPoint.y,
+	};
+
+	useEffect(() => {
+		if (!hslCanvas || !image) return;
+
+		const hslCanvasContext = hslCanvas.getContext('2d');
+
+		if (!selectionArea || !hslCanvasContext || !mappedImageData) return;
+
+		hslCanvasContext.drawImage(
+			image, 0, 0, hslCanvas.clientWidth, hslCanvas.clientHeight
+		);
+		
+		renderImageData(
+			hslCanvasContext, 
+			mappedImageData, 	
+			selectionStartPoint,
+			selectionEndPoint,
+		);
+	}, [JSON.stringify(selectionArea), mappedImageData]);
 
 	const [imageFile, setImageFile] = useState<File>();
 
@@ -189,8 +230,8 @@ const ColorModelPage = () => {
 		if (!context) return;
 
 		const [r, g, b] = [...context.getImageData(
-			event.nativeEvent.offsetX * window.devicePixelRatio, 
-			event.nativeEvent.offsetY * window.devicePixelRatio,
+			event.nativeEvent.offsetX, 
+			event.nativeEvent.offsetY,
 			1, 1
 		).data].slice(0, 3).map(component => Math.round(component));
 
@@ -244,18 +285,36 @@ const ColorModelPage = () => {
 								</div>
 								{image && (
 									<>
-										<FigureCanvas
-											ref={canvas => hslCanvas = canvas}
-											onMouseMove={handleMouseMove}
-											onMouseUp={event => setSelectionEndPoint({
-												x: event.nativeEvent.offsetX, 
-												y: event.nativeEvent.offsetY,
-											})}
-											onClick={() => {
-												setSelectionStartPoint(undefined);
-												setSelectionEndPoint(undefined);
-											}}
-										/>
+										<div>
+											<FigureCanvas
+												ref={canvas => hslCanvas = canvas}
+												onMouseMove={event => {
+													if (isSelecting) setSelectionEndPoint({
+														x: event.nativeEvent.offsetX,
+														y: event.nativeEvent.offsetY,
+													});
+													handleMouseMove(event);
+												}}
+												onMouseDown={event => {
+													setSelectionStartPoint({
+														x: event.nativeEvent.offsetX,
+														y: event.nativeEvent.offsetY,
+													});
+													setIsSelecting(true);
+												}}
+												onMouseUp={event => {
+													setIsSelecting(false);
+													setSelectionEndPoint({
+														x: event.nativeEvent.offsetX,
+														y: event.nativeEvent.offsetY,
+													});
+												}}
+												onClick={() => {
+													setSelectionStartPoint(undefined);
+													setSelectionEndPoint(undefined);
+												}}
+											/>
+										</div>
 										<ColorComponents components={
 												hsl as unknown as Record<string, number>
 										}/>

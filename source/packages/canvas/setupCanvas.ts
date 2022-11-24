@@ -6,7 +6,7 @@ function setupCanvas(
 
 	if (!context) return;
 
-	const scaleFactor = window.devicePixelRatio;
+	const scaleFactor = 1;
 	const width = canvas.clientWidth;
 	const height = canvas.clientHeight;
 	
