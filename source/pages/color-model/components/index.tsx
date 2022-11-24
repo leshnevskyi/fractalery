@@ -9,7 +9,7 @@ const ContentWrapper = styled.div`
 
 const FigureContainer = styled.div`
 	display: flex;
-	gap: 0.5rem;
+	gap: 5rem;
 `;
 
 const FigureWrapper = styled.div`

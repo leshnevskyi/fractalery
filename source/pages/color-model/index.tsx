@@ -255,7 +255,7 @@ const ColorModelPage = () => {
 					<ContentWrapper>
 						<FigureContainer>
 							<FigureWrapper>
-								<div className='flex gap-10'>
+								<div className='flex gap-10 self-end'>
 									<Text size={5} weight={7}>Original</Text>
 									{renderedImportButton}
 								</div>
@@ -272,8 +272,7 @@ const ColorModelPage = () => {
 								)}
 							</FigureWrapper>
 							<FigureWrapper>
-								<div className='flex gap-10'>
-									<Text size={5} weight={7}>Modified</Text>
+								<div className='flex gap-10 self-start'>
 									<Button
 										as='a'
 										onClick={event => {
@@ -282,6 +281,7 @@ const ColorModelPage = () => {
 											event.currentTarget.href = hslCanvas.toDataURL();
 										}}
 									>Export</Button>
+									<Text size={5} weight={7}>Modified</Text>
 								</div>
 								{image && (
 									<>
