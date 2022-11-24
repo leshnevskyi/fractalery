@@ -13,8 +13,9 @@ const CanvasWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100vh;
-  height: 50vh;
+  width: 120vh;
+  height: 60vh;
+  right: -20rem;
 `;
 
 const Canvas = styled.canvas`

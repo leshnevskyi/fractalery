@@ -17,6 +17,7 @@ import {
 	ControlLabel,
 	Tooltip,
 	Alert,
+	Button,
 } from 'components';
 
 import {setupCanvas} from 'packages/canvas';
@@ -172,6 +173,29 @@ const FractalPage = () => {
 											style={{flex: progress}}
 										/>
 									</div>
+								</motion.div>
+							)}
+						</AnimatePresence>
+						<AnimatePresence>
+							{!progress && (
+								<motion.div 
+									className='absolute -top-5 -left-5'
+									initial={{opacity: 0}}
+									animate={{opacity: 1}}
+									exit={{opacity: 0}}
+								>
+									<Button
+										className='
+											border-2 border-tuftbush shadow-lg shadow-tuftbush/50
+										'
+										as='a'
+										onClick={event => {
+											if (!canvasElement || progress) return;
+
+											event.currentTarget.download = 'fractal.png';
+											event.currentTarget.href = canvasElement.toDataURL();
+										}}
+									>Export</Button>
 								</motion.div>
 							)}
 						</AnimatePresence>
