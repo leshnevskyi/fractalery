@@ -30,7 +30,7 @@ const TransformationsPage = () => {
 		if (!canvas) return;
 
 		renderingContextRef.current = canvas?.getContext('2d');
-		setupCanvas(canvas);
+		setupCanvas(canvas, undefined, window.devicePixelRatio);
 	}, [canvas]);	
 
 	useEffect(() => {

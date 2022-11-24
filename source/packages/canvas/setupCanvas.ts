@@ -1,12 +1,12 @@
 function setupCanvas(
 	canvas: HTMLCanvasElement, 
-	renderer?: (context: CanvasRenderingContext2D) => void
+	renderer?: (context: CanvasRenderingContext2D) => void,
+	scaleFactor = 1
 ) {
 	const context = canvas.getContext('2d');
 
 	if (!context) return;
 
-	const scaleFactor = 1;
 	const width = canvas.clientWidth;
 	const height = canvas.clientHeight;
 	
