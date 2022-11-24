@@ -23,7 +23,7 @@ const renderedIcons = {
 };
 
 const color = {
-	success: 'text-green-500',
+	success: 'text-green-600',
 	warning: 'text-orange',
 	error: 'text-red',
 };
